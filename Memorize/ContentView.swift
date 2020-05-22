@@ -8,6 +8,40 @@
 
 import SwiftUI
 
+/* ------------------------ MVVM ------------------------ */
+/*
+                   -----------
+           -----> | ViewModel | <------
+          /     _  -----------         \
+  notify /     /              |___       \ calls intent function (<-)
+change  /     /                   \       \
+  (->) /     / modifies            \       \
+      /     /  the model    publish \       \
+  -------  <     (<-)         (->)   -> ------
+ | Model |                             | View |
+  -------                               ------
+ 
+ Model:
+    - UI independent part (dont import SwiftUI)
+    - Encapsulate Data + Logic (data and what happens when I modify something)
+    - Is "the truth": Always go for the model to get the real info
+ 
+ View:
+    - Refects the Model always
+    - Stateles: Dont have its own state. Takes what there is and the model and show it. Only do it when model changes.
+    - Declared: We declare what the user interface will look like, different than the old way (mvc) which is Imperative (we tell for eg arrange this things, do this do that with functions, if we consider time dimension we need to consider when to call this methods). Declared is timeless in that way. Views are struct, which by default are read only, so in that we case we cant modify them with own methods.
+    - Reactive: When the model change, the View automatically changes.
+ 
+ ViewModel:
+    - Binds View to Model: Notify when a change happen to de Model the View changes.
+    - Interpreter: It acts as an interpreter from Model to View. Eg from response model to own view model.
+    - If Model is a struct is easy to let know ViewModel it has change. ViewModel needs to check this (if Model has change)
+    - Publishes that "something changed". The View subscribe for this publish, and when its get notified that something have changed asks the ViewModel: "what have changed?" and pull the data
+    - Process user intent: Eg: Choose a card. ViewModel makes functions availble to the View to call (on tap gestures), this are call intent functions. After that modify the model (could change property, modify array
+*/
+/* ------------------------ MVVM ------------------------ */
+
+
 /*
  Comments:
  
@@ -49,35 +83,6 @@ struct CardView: View {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
