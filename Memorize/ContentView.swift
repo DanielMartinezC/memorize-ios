@@ -26,16 +26,27 @@ struct ContentView: View {
             // ForEach(0..<4, content: { index in
             // this previous line can be call like this:
             ForEach(0..<4) { index in
-                ZStack {
-                    RoundedRectangle(cornerRadius: 10.0).fill(Color.white)
-                    RoundedRectangle(cornerRadius: 10.0).stroke(lineWidth: 3.0) // Stroke a line around the edges of RoundedRectangle Shape and replace it with this new View
-                    Text("👻")
-                }
+                CardView(isFaceUp: false)
             }
         }
             .foregroundColor(Color.orange) // All orange on view inside this ZStack
             .padding() // Padding this ZStack
             .font(Font.largeTitle) // All texts inside ZStack font
+    }
+}
+
+struct CardView: View {
+    var isFaceUp: Bool // If we give default value it wont be required on initializer
+    var body: some View {
+        ZStack {
+            if isFaceUp {
+                RoundedRectangle(cornerRadius: 10.0).fill(Color.white)
+                RoundedRectangle(cornerRadius: 10.0).stroke(lineWidth: 3.0) // Stroke a line around the edges of RoundedRectangle Shape and replace it with this new View
+                Text("👻")
+            } else {
+                RoundedRectangle(cornerRadius: 10.0).fill() // If no color assgined, enviroment color will be applied. In this case is orange from HStack
+            }
+        }
     }
 }
 
