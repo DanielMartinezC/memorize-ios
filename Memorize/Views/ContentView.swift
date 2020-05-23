@@ -62,13 +62,14 @@ struct ContentView: View {
             // ForEach(0..<4, content: { index in
             // this previous line can be call like this:
             ForEach(emojiMemoryGameVM.cards) { card in
-                CardView(card: card).onTapGesture { self.emojiMemoryGameVM.choose(card: card)
+                CardView(card: card).onTapGesture {
+                    self.emojiMemoryGameVM.choose(card: card)
                 }
             }
         }
             .foregroundColor(Color.orange) // All orange on view inside this ZStack
             .padding() // Padding this ZStack
-            .font(Font.largeTitle) // All texts inside ZStack font
+            .font(emojiMemoryGameVM.amountOfPairs >= 5 ? Font.title : Font.largeTitle) // All texts inside ZStack font (smaller font if 5 or more pairs of cards)
     }
 }
 
@@ -85,6 +86,7 @@ struct CardView: View {
                 RoundedRectangle(cornerRadius: 10.0).fill() // If no color assgined, enviroment color will be applied. In this case is orange from HStack
             }
         }
+            .aspectRatio(2/3, contentMode: .fit) // Each card have a width to height ratio of 2:3
     }
 }
 
