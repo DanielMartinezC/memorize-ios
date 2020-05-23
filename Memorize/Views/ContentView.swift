@@ -50,6 +50,8 @@ change  /     /                   \       \
 */
 
 struct ContentView: View {
+    var emojiMemoryGameVM: EmojiMemoyGame // our ViewModel
+    
     // Computed property but without the need of `return`
     // `some` keyword indicates that body property can be any type as longs as it fullfils View. It is View instead of Text because we know that this computed property may get bigger, in this case compiler will detect the property value kind
     var body: some View {
@@ -59,8 +61,9 @@ struct ContentView: View {
             //First param is an array of items. In this case its an arrange of 0 to 3
             // ForEach(0..<4, content: { index in
             // this previous line can be call like this:
-            ForEach(0..<4) { index in
-                CardView(isFaceUp: false)
+            ForEach(emojiMemoryGameVM.cards) { card in
+                CardView(card: card).onTapGesture { self.emojiMemoryGameVM.choose(card: card)
+                }
             }
         }
             .foregroundColor(Color.orange) // All orange on view inside this ZStack
@@ -70,13 +73,14 @@ struct ContentView: View {
 }
 
 struct CardView: View {
-    var isFaceUp: Bool // If we give default value it wont be required on initializer
+    var card: MemoryGame<String>.Card // If we give default value it wont be required on initializer
+    
     var body: some View {
         ZStack {
-            if isFaceUp {
+            if card.isFaceUp {
                 RoundedRectangle(cornerRadius: 10.0).fill(Color.white)
                 RoundedRectangle(cornerRadius: 10.0).stroke(lineWidth: 3.0) // Stroke a line around the edges of RoundedRectangle Shape and replace it with this new View
-                Text("👻")
+                Text(card.content)
             } else {
                 RoundedRectangle(cornerRadius: 10.0).fill() // If no color assgined, enviroment color will be applied. In this case is orange from HStack
             }
@@ -86,6 +90,6 @@ struct CardView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(emojiMemoryGameVM: EmojiMemoyGame())
     }
 }
