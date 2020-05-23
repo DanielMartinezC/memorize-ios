@@ -17,8 +17,9 @@ class EmojiMemoyGame {
     
     // Static because is a not an instance, we send this as a type
     static func createMemoryGame() -> MemoryGame<String> {
-        let emojis: Array<String> = ["👻", "🎃", "🕷"]
-        return MemoryGame<String>(numberOfPairsOfCards: emojis.count) { pairIndex in
+        
+let emojis: Array<String> = ["👻", "🎃", "🕷", "🧟‍♂️", "🍬","🧙‍♂️", "🍫", "🥧", "🥦", "🐲", "🕸", "🧚"].shuffled()
+        return MemoryGame<String>(numberOfPairsOfCards: Int.random(in: 2...5)) { pairIndex in //The game start up with a random number of pairs of cards between 2 pairs and 5 pairs.
             emojis[pairIndex]
         }
     }
@@ -28,6 +29,10 @@ class EmojiMemoyGame {
     // Hide game model but enable the view to consume cards via `cards`
     var cards: Array<MemoryGame<String>.Card> {
         gameModel.cards
+    }
+    
+    var amountOfPairs: Int {
+        gameModel.cards.count/2
     }
     
     // MARK: - Intents

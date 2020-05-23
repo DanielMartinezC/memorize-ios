@@ -19,9 +19,10 @@ struct MemoryGame<CardContent> {
             cards.append(Card(id: pairIndex*2, content: content))
             cards.append(Card(id: pairIndex*2+1, content: content))
         }
+        cards.shuffle()
     }
     
-    func choose(card: Card) {
+    func choose(card: MemoryGame<String>.Card) {
         print("card choosen: \(card)")
     }
     
@@ -31,5 +32,9 @@ struct MemoryGame<CardContent> {
         var isFaceUp: Bool = true
         var isMatched: Bool = false
         var content: CardContent // CardContent is a Generic or 'don`t care' type. It has to be defined with <CardContent> (<Element>) in the main struct (MemoryGame)
+        
+        mutating func toggleCard() {
+            isFaceUp.toggle()
+        }
     }
 }
