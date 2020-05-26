@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Combine
 
 // ViewModels are always class
 class EmojiMemoyGame {
@@ -18,7 +19,7 @@ class EmojiMemoyGame {
     // Static because is a not an instance, we send this as a type
     static func createMemoryGame() -> MemoryGame<String> {
         
-let emojis: Array<String> = ["👻", "🎃", "🕷", "🧟‍♂️", "🍬","🧙‍♂️", "🍫", "🥧", "🥦", "🐲", "🕸", "🧚"].shuffled()
+        let emojis: Array<String> = ["👻", "🎃", "🕷", "🧟‍♂️", "🍬","🧙‍♂️", "🍫", "🥧", "🥦", "🐲", "🕸", "🧚"].shuffled()
         return MemoryGame<String>(numberOfPairsOfCards: Int.random(in: 2...5)) { pairIndex in //The game start up with a random number of pairs of cards between 2 pairs and 5 pairs.
             emojis[pairIndex]
         }
