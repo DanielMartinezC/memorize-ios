@@ -9,12 +9,13 @@
 import SwiftUI
 import Combine
 
-// ViewModels are always class
-class EmojiMemoyGame {
+// ViewModels are always class. ObservableObject Implements objectWillChange property, which will notify subscribers and objet has changed with Publish
+class EmojiMemoyGame: ObservableObject {
     
     // Close Model access to the View with private.
-    //If we only want EmojiMemoryGame to modify but all can see this property we could also do: private(set) var gameModel: MemoryGame<String>
-    private var gameModel: MemoryGame<String> = EmojiMemoyGame.createMemoryGame()
+    // If we only want EmojiMemoryGame to modify but all can see this property we could also do: private(set) var gameModel: MemoryGame<String>
+    // @Published is a wrapper that every time out model changes it calls objetWillChange
+    @Published private var gameModel: MemoryGame<String> = EmojiMemoyGame.createMemoryGame()
     
     // Static because is a not an instance, we send this as a type
     static func createMemoryGame() -> MemoryGame<String> {
@@ -36,7 +37,7 @@ class EmojiMemoyGame {
         gameModel.cards.count/2
     }
     
-    // MARK: - Intents
+    // MARK: - Intent(s)
     
     func choose(card: MemoryGame<String>.Card) {
         gameModel.choose(card: card)
