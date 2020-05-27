@@ -8,6 +8,72 @@
 
 import SwiftUI
 
+struct EmojiMemoryGameView: View {
+    @ObservedObject var emojiMemoryGameVM: EmojiMemoyGame // our ViewModel. @ObservedObject is a wwapper to subscribe to changes on our VM Published objects
+    
+    // Computed property but without the need of `return`
+    // `some` keyword indicates that body property can be any type as longs as it fullfils View. It is View instead of Text because we know that this computed property may get bigger, in this case compiler will detect the property value kind
+    var body: some View {
+        // HStack, ForEach, ZStack, etc are all combiners
+        // Horizontal Stack. Accept spacing param for space between items
+        GridView(items: emojiMemoryGameVM.cards) { card in
+            CardView(card: card).onTapGesture {
+                self.emojiMemoryGameVM.choose(card: card)
+            }
+        }
+            .padding(5)
+            .foregroundColor(Color.orange) // All orange on view inside this ZStack
+    }
+}
+
+struct CardView: View {
+    var card: MemoryGame<String>.Card // If we give default value it wont be required on initializer
+    
+    // If local properties are needed to draw our body is better to create them on struct as computed: Eg: var test: Int { return 0 }.
+    // We could do it inside body but this is a better way.
+    
+    var body: some View {
+        GeometryReader { geometry in
+            self.body(for: geometry.size)
+        }
+    }
+    
+    func body(for size: CGSize) -> some View {
+        ZStack {
+            if card.isFaceUp {
+                RoundedRectangle(cornerRadius: cornerRadius).fill(Color.white)
+                RoundedRectangle(cornerRadius: cornerRadius).stroke(lineWidth: edgeLineWidth) // Stroke a line around the edges of RoundedRectangle Shape and replace it with this new View
+                Text(card.content)
+            } else {
+                if !card.isMatched {
+                    RoundedRectangle(cornerRadius: cornerRadius).fill() // If no color assgined, enviroment color will be applied. In this case is orange from HStack
+                }
+            }
+        }
+            .padding(5)
+            .font(Font.system(size: fontSize(for: size)))
+    }
+    
+    //MARK: - Drawing Constants
+    
+    private let cornerRadius: CGFloat = 10.0
+    private let edgeLineWidth: CGFloat = 3
+    private let fontScaleFactor: CGFloat = 0.75
+    
+    private func fontSize(for size: CGSize) -> CGFloat {
+        min(size.width, size.height) * fontScaleFactor
+    }
+}
+
+#if DEBUG
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        EmojiMemoryGameView(emojiMemoryGameVM: EmojiMemoyGame())
+    }
+}
+#endif
+
+
 /*
 /* ------------------------------------------------ MVVM ------------------------------------------------ */
 
@@ -49,72 +115,3 @@ import SwiftUI
  Usually go for standing arguments. Eg padding, stack spacing, radius type, etc
  On functions or views: If no comments can ommit () and just go for second param `content` with {}
 */
-
-struct EmojiMemoryGameView: View {
-    @ObservedObject var emojiMemoryGameVM: EmojiMemoyGame // our ViewModel. @ObservedObject is a wwapper to subscribe to changes on our VM Published objects
-    
-    // Computed property but without the need of `return`
-    // `some` keyword indicates that body property can be any type as longs as it fullfils View. It is View instead of Text because we know that this computed property may get bigger, in this case compiler will detect the property value kind
-    var body: some View {
-        // HStack, ForEach, ZStack, etc are all combiners
-        // Horizontal Stack. Accept spacing param for space between items
-        HStack {
-            //First param is an array of items. In this case its an arrange of 0 to 3
-            // ForEach(0..<4, content: { index in
-            // this previous line can be call like this:
-            ForEach(emojiMemoryGameVM.cards) { card in
-                CardView(card: card).onTapGesture {
-                    self.emojiMemoryGameVM.choose(card: card)
-                }
-            }
-        }
-            .foregroundColor(Color.orange) // All orange on view inside this ZStack
-            .padding() // Padding this ZStack
-            
-    }
-}
-
-struct CardView: View {
-    var card: MemoryGame<String>.Card // If we give default value it wont be required on initializer
-    
-    // If local properties are needed to draw our body is better to create them on struct as computed: Eg: var test: Int { return 0 }.
-    // We could do it inside body but this is a better way.
-    
-    var body: some View {
-        GeometryReader { geometry in
-            self.body(for: geometry.size)
-        }
-    }
-    
-    func body(for size: CGSize) -> some View {
-        ZStack {
-            if card.isFaceUp {
-                RoundedRectangle(cornerRadius: cornerRadius).fill(Color.white)
-                RoundedRectangle(cornerRadius: cornerRadius).stroke(lineWidth: edgeLineWidth) // Stroke a line around the edges of RoundedRectangle Shape and replace it with this new View
-                Text(card.content)
-            } else {
-                RoundedRectangle(cornerRadius: cornerRadius).fill() // If no color assgined, enviroment color will be applied. In this case is orange from HStack
-            }
-        }
-            .aspectRatio(2/3, contentMode: .fit) // Each card have a width to height ratio of 2:3
-            .font(Font.system(size: fontSize(for: size)))
-    }
-    
-    //MARK: - Drawing Constants
-    
-    private let cornerRadius: CGFloat = 10.0
-    private let edgeLineWidth: CGFloat = 3
-    private let fontScaleFactor: CGFloat = 0.75
-    
-    private func fontSize(for size: CGSize) -> CGFloat {
-        min(size.width, size.height) * fontScaleFactor
-    }
-}
-
-#if DEBUG
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        EmojiMemoryGameView(emojiMemoryGameVM: EmojiMemoyGame())
-    }
-}
-#endif
