@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  EmojiMemoryGameView.swift
 //  Memorize
 //
 //  Created by Daniel Martinez Condinanza on 5/21/20.
@@ -8,18 +8,19 @@
 
 import SwiftUI
 
-/* ------------------------ MVVM ------------------------ */
 /*
-                   -----------
-           -----> | ViewModel | <------
-          /     _  -----------         \
-  notify /     /              |___       \ calls intent function (<-)
-change  /     /                   \       \
-  (->) /     / modifies            \       \
-      /     /  the model    publish \       \
-  -------  <     (<-)         (->)   -> ------
- | Model |                             | View |
-  -------                               ------
+/* ------------------------------------------------ MVVM ------------------------------------------------ */
+
+                                               -----------
+                                       -----> | ViewModel | <------
+                                      /     _  -----------         \
+                              notify /     /              |___       \ calls intent function (<-)
+                            change  /     /                   \       \
+                              (->) /     / modifies            \       \
+                                  /     /  the model    publish \       \
+                              -------  <     (<-)         (->)   -> ------
+                             | Model |                             | View |
+                              -------                               ------
  
  Model:
     - UI independent part (dont import SwiftUI)
@@ -38,9 +39,9 @@ change  /     /                   \       \
     - If Model is a struct is easy to let know ViewModel it has change. ViewModel needs to check this (if Model has change)
     - Publishes that "something changed". The View subscribe for this publish, and when its get notified that something have changed asks the ViewModel: "what have changed?" and pull the data
     - Process user intent: Eg: Choose a card. ViewModel makes functions availble to the View to call (on tap gestures), this are call intent functions. After that modify the model (could change property, modify array
-*/
-/* ------------------------ MVVM ------------------------ */
 
+/* ------------------------------------------------ MVVM ------------------------------------------------ */
+*/
 
 /*
  Comments:
@@ -49,8 +50,8 @@ change  /     /                   \       \
  On functions or views: If no comments can ommit () and just go for second param `content` with {}
 */
 
-struct ContentView: View {
-    var emojiMemoryGameVM: EmojiMemoyGame // our ViewModel
+struct EmojiMemoryGameView: View {
+    @ObservedObject var emojiMemoryGameVM: EmojiMemoyGame // our ViewModel. @ObservedObject is a wwapper to subscribe to changes on our VM Published objects
     
     // Computed property but without the need of `return`
     // `some` keyword indicates that body property can be any type as longs as it fullfils View. It is View instead of Text because we know that this computed property may get bigger, in this case compiler will detect the property value kind
@@ -69,29 +70,51 @@ struct ContentView: View {
         }
             .foregroundColor(Color.orange) // All orange on view inside this ZStack
             .padding() // Padding this ZStack
-            .font(emojiMemoryGameVM.amountOfPairs >= 5 ? Font.title : Font.largeTitle) // All texts inside ZStack font (smaller font if 5 or more pairs of cards)
+            
     }
 }
 
 struct CardView: View {
     var card: MemoryGame<String>.Card // If we give default value it wont be required on initializer
     
+    // If local properties are needed to draw our body is better to create them on struct as computed: Eg: var test: Int { return 0 }.
+    // We could do it inside body but this is a better way.
+    
     var body: some View {
+        GeometryReader { geometry in
+            self.body(for: geometry.size)
+        }
+    }
+    
+    func body(for size: CGSize) -> some View {
         ZStack {
             if card.isFaceUp {
-                RoundedRectangle(cornerRadius: 10.0).fill(Color.white)
-                RoundedRectangle(cornerRadius: 10.0).stroke(lineWidth: 3.0) // Stroke a line around the edges of RoundedRectangle Shape and replace it with this new View
+                RoundedRectangle(cornerRadius: cornerRadius).fill(Color.white)
+                RoundedRectangle(cornerRadius: cornerRadius).stroke(lineWidth: edgeLineWidth) // Stroke a line around the edges of RoundedRectangle Shape and replace it with this new View
                 Text(card.content)
             } else {
-                RoundedRectangle(cornerRadius: 10.0).fill() // If no color assgined, enviroment color will be applied. In this case is orange from HStack
+                RoundedRectangle(cornerRadius: cornerRadius).fill() // If no color assgined, enviroment color will be applied. In this case is orange from HStack
             }
         }
             .aspectRatio(2/3, contentMode: .fit) // Each card have a width to height ratio of 2:3
+            .font(Font.system(size: fontSize(for: size)))
+    }
+    
+    //MARK: - Drawing Constants
+    
+    private let cornerRadius: CGFloat = 10.0
+    private let edgeLineWidth: CGFloat = 3
+    private let fontScaleFactor: CGFloat = 0.75
+    
+    private func fontSize(for size: CGSize) -> CGFloat {
+        min(size.width, size.height) * fontScaleFactor
     }
 }
 
+#if DEBUG
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(emojiMemoryGameVM: EmojiMemoyGame())
+        EmojiMemoryGameView(emojiMemoryGameVM: EmojiMemoyGame())
     }
 }
+#endif
