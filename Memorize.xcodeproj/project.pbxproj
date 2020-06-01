@@ -18,6 +18,8 @@
 		6639E22B24776BA300C6FD13 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6639E22A24776BA300C6FD13 /* Assets.xcassets */; };
 		6639E22E24776BA300C6FD13 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6639E22D24776BA300C6FD13 /* Preview Assets.xcassets */; };
 		6639E23124776BA300C6FD13 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6639E22F24776BA300C6FD13 /* LaunchScreen.storyboard */; };
+		66B04E93248466720035EF93 /* GameTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B04E92248466720035EF93 /* GameTheme.swift */; };
+		66B04E95248478420035EF93 /* GradientButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B04E94248478420035EF93 /* GradientButtonStyle.swift */; };
 		66E16F97247E17050089D9AF /* Array+Only.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66E16F96247E17050089D9AF /* Array+Only.swift */; };
 /* End PBXBuildFile section */
 
@@ -35,6 +37,8 @@
 		6639E22D24776BA300C6FD13 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		6639E23024776BA300C6FD13 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6639E23224776BA300C6FD13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		66B04E92248466720035EF93 /* GameTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTheme.swift; sourceTree = "<group>"; };
+		66B04E94248478420035EF93 /* GradientButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientButtonStyle.swift; sourceTree = "<group>"; };
 		66E16F96247E17050089D9AF /* Array+Only.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Only.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -53,6 +57,7 @@
 			isa = PBXGroup;
 			children = (
 				6614F3352478A4B2005D5AD5 /* MemoryGame.swift */,
+				66B04E92248466720035EF93 /* GameTheme.swift */,
 				662C8882247E06D7009B157A /* GridLayout.swift */,
 			);
 			path = Models;
@@ -63,6 +68,7 @@
 			children = (
 				6639E22824776BA200C6FD13 /* EmojiMemoryGameView.swift */,
 				662C887E247E02C9009B157A /* GridView.swift */,
+				66B04E94248478420035EF93 /* GradientButtonStyle.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -197,7 +203,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				6639E22524776BA200C6FD13 /* AppDelegate.swift in Sources */,
+				66B04E93248466720035EF93 /* GameTheme.swift in Sources */,
 				6639E22724776BA200C6FD13 /* SceneDelegate.swift in Sources */,
+				66B04E95248478420035EF93 /* GradientButtonStyle.swift in Sources */,
 				6614F3362478A4B2005D5AD5 /* MemoryGame.swift in Sources */,
 				66E16F97247E17050089D9AF /* Array+Only.swift in Sources */,
 				6639E22924776BA200C6FD13 /* EmojiMemoryGameView.swift in Sources */,

@@ -15,14 +15,24 @@ struct EmojiMemoryGameView: View {
     // `some` keyword indicates that body property can be any type as longs as it fullfils View. It is View instead of Text because we know that this computed property may get bigger, in this case compiler will detect the property value kind
     var body: some View {
         // HStack, ForEach, ZStack, etc are all combiners
-        // Horizontal Stack. Accept spacing param for space between items
-        GridView(items: emojiMemoryGameVM.cards) { card in
-            CardView(card: card).onTapGesture {
-                self.emojiMemoryGameVM.choose(card: card)
+        // Horizontal Stack. Accept spacing param for space between
+        VStack {
+            Text("\(emojiMemoryGameVM.themeName)")
+                .font(.largeTitle)
+            Text("Score: \(emojiMemoryGameVM.score)")
+                .font(.title)
+            GridView(items: emojiMemoryGameVM.cards) { card in
+                CardView(card: card).onTapGesture {
+                    self.emojiMemoryGameVM.choose(card: card)
+                }
             }
+            Button("New Game", action: {
+                self.emojiMemoryGameVM.newGame()
+                })
+                .buttonStyle(GradientButtonStyle(color: emojiMemoryGameVM.themeColor))
         }
             .padding(5)
-            .foregroundColor(Color.orange) // All orange on view inside this ZStack
+            .foregroundColor(emojiMemoryGameVM.themeColor) // All orange on view inside this ZStack
     }
 }
 
