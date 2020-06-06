@@ -28,7 +28,7 @@ struct EmojiMemoryGameView: View {
             }
             Button("New Game", action: {
                 self.emojiMemoryGameVM.newGame()
-                })
+            })
                 .buttonStyle(GradientButtonStyle(color: emojiMemoryGameVM.themeColor))
         }
             .padding(5)
@@ -48,37 +48,36 @@ struct CardView: View {
         }
     }
     
+    // ViewBuilder: This is now a list of views, in this case it will return ZStack or empty
+    @ViewBuilder
     private func body(for size: CGSize) -> some View {
-        ZStack {
-            if card.isFaceUp {
-                RoundedRectangle(cornerRadius: cornerRadius).fill(Color.white)
-                RoundedRectangle(cornerRadius: cornerRadius).stroke(lineWidth: edgeLineWidth) // Stroke a line around the edges of RoundedRectangle Shape and replace it with this new View
-                Text(card.content)
-            } else {
-                if !card.isMatched {
-                    RoundedRectangle(cornerRadius: cornerRadius).fill() // If no color assgined, enviroment color will be applied. In this case is orange from HStack
-                }
-            }
+        if card.isFaceUp || !card.isMatched {
+            internalCardifyBody(for: size)
+                .cardify(isFaceUp: card.isFaceUp)
+                .padding(5)
         }
-            .padding(5)
-            .font(Font.system(size: fontSize(for: size)))
+    }
+    
+    private func internalCardifyBody(for size: CGSize) -> some View {
+        ZStack {
+            Pie(startAngle: Angle(degrees: 0-90), endAngle: Angle(degrees: 110-90), clockwise: true).padding(6).opacity(0.33)
+            Text(card.content).font(Font.system(size: fontSize(for: size)))
+        }
     }
     
     //MARK: - Drawing Constants
     
-    private let cornerRadius: CGFloat = 10.0
-    private let edgeLineWidth: CGFloat = 3
-    private let fontScaleFactor: CGFloat = 0.75
-    
     private func fontSize(for size: CGSize) -> CGFloat {
-        min(size.width, size.height) * fontScaleFactor
+        min(size.width, size.height) * 0.65
     }
 }
 
 #if DEBUG
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        EmojiMemoryGameView(emojiMemoryGameVM: EmojiMemoyGame())
+        let game = EmojiMemoyGame()
+        game.choose(card: game.cards[0])
+        return EmojiMemoryGameView(emojiMemoryGameVM: game)
     }
 }
 #endif
