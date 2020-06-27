@@ -36,6 +36,6 @@ struct GameTheme {
     private(set) var randomPairs: Bool = false
     
     var pairsToShow: Int {
-        randomPairs ? Int.random(in: 2...5) : emojis.count/2
+        randomPairs ? Int.random(in: 2...5) : emojis.count
     }
 }
