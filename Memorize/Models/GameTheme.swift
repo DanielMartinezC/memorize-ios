@@ -12,6 +12,7 @@ enum Themes: CaseIterable {
     case hallowen
     case sports
     case animals
+    case food
     
     var game: GameTheme {
         switch self {
@@ -21,18 +22,20 @@ enum Themes: CaseIterable {
             return GameTheme(name: "Sports", emojis: ["⚽️", "🏀", "🏈", "⚾️", "🥎","🏐", "🥏", "🏓", "⛳️", "🎾", "🏏", "🥊"], color: .red)
         case .animals:
             return GameTheme(name: "Animals", emojis: ["🐶", "🐱", "🐭", "🐻", "🦊","🐨", "🐼", "🦁", "🐯", "🐮", "🐵", "🐝"], color: .green)
+        case .food:
+            return GameTheme(name: "Food", emojis: ["🍎", "🍊", "🥓", "🍉", "🍇","🍍", "🥑", "🍕", "🌽", "🥕", "🍗", "🌮"], color: .purple)
         }
     }
 }
 
 struct GameTheme {
     
-    var name: String
-    var emojis: Array<String>
-    var color: Color
-    var randomPairs: Bool = false
+    private(set) var name: String
+    private(set) var emojis: Array<String>
+    private(set) var color: Color
+    private(set) var randomPairs: Bool = false
     
     var pairsToShow: Int {
-        randomPairs ? Int.random(in: 2...5) : emojis.count/2
+        randomPairs ? Int.random(in: 2...5) : emojis.count
     }
 }

@@ -23,12 +23,16 @@ struct EmojiMemoryGameView: View {
                 .font(.title)
             GridView(items: emojiMemoryGameVM.cards) { card in
                 CardView(card: card).onTapGesture {
-                    self.emojiMemoryGameVM.choose(card: card)
+                    withAnimation(.linear(duration: 0.75)){ // Animation when card is tapped
+                        self.emojiMemoryGameVM.choose(card: card)
+                    }
                 }
             }
             Button("New Game", action: {
-                self.emojiMemoryGameVM.newGame()
-                })
+                withAnimation(.easeInOut(duration: 2)) { // Animation on new game
+                    self.emojiMemoryGameVM.newGame()
+                }
+            })
                 .buttonStyle(GradientButtonStyle(color: emojiMemoryGameVM.themeColor))
         }
             .padding(5)
@@ -48,37 +52,68 @@ struct CardView: View {
         }
     }
     
-    func body(for size: CGSize) -> some View {
+    @State private var animatedBonusRemaining: Double = 0 // Var sink with the model. State always private
+    
+    private func startBonusTimeAnimation() {
+        animatedBonusRemaining = card.bonusRemaining
+        withAnimation(.linear(duration: card.bonusTimeRemaining)) {
+            animatedBonusRemaining = 0
+        }
+    }
+    
+    // ViewBuilder: This is now a list of views, in this case it will return ZStack or empty
+    @ViewBuilder
+    private func body(for size: CGSize) -> some View {
+        if card.isFaceUp || !card.isMatched {
+            internalCardifyBody(for: size)
+                .cardify(isFaceUp: card.isFaceUp)
+                .padding(5)
+        }
+    }
+    
+    private func internalCardifyBody(for size: CGSize) -> some View {
         ZStack {
-            if card.isFaceUp {
-                RoundedRectangle(cornerRadius: cornerRadius).fill(Color.white)
-                RoundedRectangle(cornerRadius: cornerRadius).stroke(lineWidth: edgeLineWidth) // Stroke a line around the edges of RoundedRectangle Shape and replace it with this new View
-                Text(card.content)
-            } else {
-                if !card.isMatched {
-                    RoundedRectangle(cornerRadius: cornerRadius).fill() // If no color assgined, enviroment color will be applied. In this case is orange from HStack
+            Group {
+                if card.isConsumingBonusTime {
+                    Pie(
+                        startAngle: Angle.degrees(0-90),
+                        endAngle: Angle.degrees(-animatedBonusRemaining*360-90),
+                        clockwise: true
+                    )
+                        .onAppear() {
+                            self.startBonusTimeAnimation()
+                        }
+                } else {
+                    Pie(
+                        startAngle: Angle.degrees(0-90),
+                        endAngle: Angle.degrees(-card.bonusRemaining*360-90),
+                        clockwise: true
+                    )
+                        
                 }
             }
+                .padding(6)
+                .opacity(0.33)
+            Text(card.content)
+                .font(Font.system(size: fontSize(for: size)))
+                .rotationEffect(Angle.degrees(card.isMatched ? 360 : 0))
+                .animation(card.isMatched ? Animation.linear(duration: 1).repeatForever(autoreverses: false) : .default) // Animation when matched
         }
-            .padding(5)
-            .font(Font.system(size: fontSize(for: size)))
     }
     
     //MARK: - Drawing Constants
     
-    private let cornerRadius: CGFloat = 10.0
-    private let edgeLineWidth: CGFloat = 3
-    private let fontScaleFactor: CGFloat = 0.75
-    
     private func fontSize(for size: CGSize) -> CGFloat {
-        min(size.width, size.height) * fontScaleFactor
+        min(size.width, size.height) * 0.65
     }
 }
 
 #if DEBUG
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        EmojiMemoryGameView(emojiMemoryGameVM: EmojiMemoyGame())
+        let game = EmojiMemoyGame()
+        game.choose(card: game.cards[0])
+        return EmojiMemoryGameView(emojiMemoryGameVM: game)
     }
 }
 #endif

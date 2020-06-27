@@ -18,9 +18,10 @@ class EmojiMemoyGame: ObservableObject {
     @Published private var gameModel: MemoryGame<String> = EmojiMemoyGame.createMemoryGame()
     
     private(set) var score: Int = 0
+    private var temporalScore: Int = 0
     
     // Static because is a not an instance, we send this as a type
-    static func createMemoryGame() -> MemoryGame<String> {
+    private static func createMemoryGame() -> MemoryGame<String> {
         let theme = EmojiMemoyGame.addTheme()
         let emojis: Array<String> = theme.emojis.shuffled()
         return MemoryGame<String>(theme: theme, numberOfPairsOfCards: theme.pairsToShow) { pairIndex in //The game start up with a random number of pairs of cards between 2 pairs and 5 pairs.
@@ -28,7 +29,7 @@ class EmojiMemoyGame: ObservableObject {
         }
     }
     
-    static func addTheme() -> GameTheme {
+    private static func addTheme() -> GameTheme {
         Themes.allCases.map({ $0.game }).shuffled()[0]
     }
     
@@ -57,8 +58,6 @@ class EmojiMemoyGame: ObservableObject {
         gameModel = EmojiMemoyGame.createMemoryGame()
         score = 0
     }
-    
-    private var temporalScore: Int = 0
     
     func choose(card: MemoryGame<String>.Card) {
         gameModel.choose(card: card)

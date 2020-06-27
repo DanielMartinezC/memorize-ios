@@ -25,13 +25,13 @@ struct GridView<Item, ItemView>: View where Item: Identifiable, ItemView: View {
         }
     }
     
-    func body(for layout: GridLayout) -> some View {
+    private func body(for layout: GridLayout) -> some View {
         ForEach(items) { item in
             self.body(for: item, in: layout)
         }
     }
     
-    func body(for item: Item, in layout: GridLayout) -> some View {
+    private func body(for item: Item, in layout: GridLayout) -> some View {
         let index = items.firstIndex(matching: item)
         return Group {
             if index != nil {
